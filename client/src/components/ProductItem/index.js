@@ -15,11 +15,23 @@ function ProductItem(item) {
 
   const [state, dispatch] = useStoreContext();
 
+  const { cart } = state;
+
   const addToCart = () => {
-    dispatch({
-      type: ADD_TO_CART,
-      product: { ...item, purchaseQuantity: 1 }
-    });
+    const itemInCart = cart.find((cartItem) => cartItem._id === _id);
+
+    if (itemInCart) {
+      dispatch({
+        type: UPDATE_CART_QUANTITY,
+        _id: _id,
+        purchaseQuantity: parseInt(itemInCart.purchaseQuantity) + 1
+      });
+    } else {
+      dispatch({
+        type: ADD_TO_CART,
+        product: { ...item, purchaseQuantity: 1 }
+      });
+    }
   };
 
   return (
@@ -35,7 +47,7 @@ function ProductItem(item) {
         <div>{quantity} {pluralize("item", quantity)} in stock</div>
         <span>${price}</span>
       </div>
-      <button onClick={addToCart}>Add to cart</button>
+      <button onClick={addToCart}>Add to Cart</button>
     </div>
   );
 }
